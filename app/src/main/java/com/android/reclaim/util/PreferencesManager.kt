@@ -2,14 +2,33 @@ package com.android.reclaim.util
 
 import android.content.Context
 import android.content.SharedPreferences
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 class PreferencesManager(context: Context) {
     private val prefs: SharedPreferences =
         context.getSharedPreferences("reclaim_prefs", Context.MODE_PRIVATE)
 
+    private val _appTheme = MutableStateFlow(appTheme)
+    val appThemeFlow: StateFlow<String> = _appTheme.asStateFlow()
+
+    private val preferenceChangeListener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
+        if (key == "appTheme") {
+            _appTheme.value = appTheme
+        }
+    }
+
+    init {
+        prefs.registerOnSharedPreferenceChangeListener(preferenceChangeListener)
+    }
+
     var appTheme: String
         get() = prefs.getString("appTheme", "system") ?: "system"
-        set(value) = prefs.edit().putString("appTheme", value).apply()
+        set(value) {
+            prefs.edit().putString("appTheme", value).apply()
+            _appTheme.value = value
+        }
 
     var accentColor: String
         get() = prefs.getString("accentColor", "blue") ?: "blue"
