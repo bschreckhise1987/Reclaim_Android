@@ -8,14 +8,14 @@ the current iOS-to-Android visual and functionality parity work began. The
 current development phase focuses on making the Android version match the
 existing iOS version as closely as possible.
 
-**Test Login**
+**Test Login**\
 Use this test account to access the app:
 * EMAIL: test@reclaim.com
 * PASSWORD: 12345678
 
 These credentials are for development and testing purposes only.
 
-**Technology**
+**Technology**\
 The Android app uses:
 * Kotlin
 * Jetpack Compose
@@ -25,7 +25,7 @@ The Android app uses:
 * Supabase database
 * Android Viewmodels and repositories
 
-**Core Functionality Already Implemented**
+**Core Functionality Already Implemented**\
 Before beginning the visual parity work, the Android app already
 had basic Functionality across the main areas of the application.
 
@@ -96,11 +96,11 @@ had basic Functionality across the main areas of the application.
 * Viewing support settings
 * Viewing appearance settings
 
-**iOS-to-Android Parity Work Completed**
+**iOS-to-Android Parity Work Completed**\
 The following screens have been updated during the current effort
 to match the iOS version more closely.
 
-**Home Screen**
+**Home Screen**\
 Completed:
 * iOS-style vertical spacing
 * Updated top padding
@@ -117,7 +117,7 @@ Completed:
 * Weekly check-in information
 * Improved overall screen organization
 
-**Daily Check-In Screen**
+**Daily Check-In Screen**\
 Completed:
 * Emoji-based mood selection
 * Selected mood state
@@ -131,7 +131,7 @@ Completed:
 * Weekly check-in refresh
 * iOS-inspired spacing and card
 
-**History Screen**
+**History Screen**\
 Completed:
 * History entries displayed in a list
 * Newest entries shown first
@@ -160,7 +160,7 @@ Completed:
 * Final iOS-to_Android visual comparison
 * Full Android testing
 
-**Development Process**
+**Development Process**\
 The Android app is being updated one screen at a time using the 
 iOS version as the design and behavior reference.
 
@@ -174,7 +174,7 @@ For each screen:
 6. Fix any build or functionality issues or errors.
 7. Move to the next screen.
 
-**Current Status**
+**Current Status**\
 The Android app already contains the basic functionality for the
 complete application.
 
@@ -189,7 +189,7 @@ The next screen schedules for parity work is:
 
 **Insights**
 
-**Important Distinction**
+**Important Distinction**\
 The app's core functionality was implemented before the 
 current parity work began.
 
