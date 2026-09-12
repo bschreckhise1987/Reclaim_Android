@@ -185,10 +185,13 @@ and have been confirmed to build successfully:
 2. Daily Check-In
 3. History
 
-The next screen schedules for parity work is:
+The next screen scheduled for parity work is:
 
 **Insights**
 
+**Known Bugs**\
+The following bugs have been identified and is being addressed:\
+The Sober Time card is not displaying the correct value with dark theme.
 **Important Distinction**\
 The app's core functionality was implemented before the 
 current parity work began.
