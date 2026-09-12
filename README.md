@@ -1,4 +1,4 @@
-Reclaim Android
+Reclaim Android\
 Reclaim is a recovery and wellness app designed to help users track 
 sobriety progress, complete daily check-ins, record daily experiences,
 review history, view insights, and access coping strategies.
