@@ -49,7 +49,7 @@ fun InsightsScreen(
         modifier = modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(16.dp),
+            .padding(horizontal = 16.dp, vertical = 20.dp),
         verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
         Text(
@@ -57,6 +57,18 @@ fun InsightsScreen(
             style = MaterialTheme.typography.headlineMedium,
             fontWeight = FontWeight.Bold
         )
+
+        if (viewModel.isLoading) {
+            Text(
+                text = "Loading your insights...",
+                color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
+
+        viewModel.errorMessage?.let { message ->
+            Text(
+                text = message,
+                color = MaterialTheme.colorScheme.error)
+        }
 
         // Weekly Summary Card
         Card(modifier = Modifier.fillMaxWidth()) {
