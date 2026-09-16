@@ -181,4 +181,22 @@ class StrategyViewModel(
             }
         }
     }
+    fun updateSharing(strategy: CopingStrategy, isShared: Boolean) {
+        viewModelScope.launch {
+            try {
+                repository.updateSharing(strategy.id, isShared)
+
+                strategies = strategies.map {
+                    if (it.id == strategy.id) {
+                        it.copy(isShared = isShared)
+                    } else {
+                        it
+                    }
+                }
+            } catch (e: Exception) {
+                errorMessage = "Failed to update sharing."
+            }
+        }
+    }
+
 }

@@ -1,5 +1,6 @@
 package com.android.reclaim.ui.strategy
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -13,6 +14,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Button
+import androidx.compose.material3.Switch
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -24,6 +26,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -53,16 +56,28 @@ fun AddStrategyScreen(
     var instructions by remember { mutableStateOf("") }
     var rating by remember { mutableIntStateOf(3) }
     var expanded by remember { mutableStateOf(false) }
+    var isShared by remember { mutableStateOf(false)}
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Add Strategy") },
+                title = {
+                    Text(
+                        text = "Add Strategy",
+                        fontWeight = FontWeight.SemiBold
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back"
+                        )
                     }
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.background
+                )
             )
         }
     ) { innerPadding ->
@@ -71,37 +86,66 @@ fun AddStrategyScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
                 .verticalScroll(rememberScrollState())
-                .padding(16.dp)
+                .padding(horizontal = 16.dp, vertical = 20.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+            Text(
+                text = "Create a coping strategy",
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.Bold
+            )
+
+            Text(
+                text = "Add a strategy you can use when cravings or difficult moments occur.",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+
             OutlinedTextField(
                 value = name,
                 onValueChange = { name = it },
                 label = { Text("Strategy Name") },
+                placeholder = { Text("e.g. Take a short walk") },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
-
             ExposedDropdownMenuBox(
                 expanded = expanded,
-                onExpandedChange = { expanded = !expanded }
+                onExpandedChange = {
+                    expanded = !expanded
+                }
             ) {
                 OutlinedTextField(
-                    value = selectedType.value.replaceFirstChar { it.uppercase() },
+                    value = selectedType.value
+                        .replaceFirstChar { it.uppercase() },
                     onValueChange = {},
                     readOnly = true,
                     label = { Text("Category") },
-                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-                    modifier = Modifier.menuAnchor().fillMaxWidth()
+                    trailingIcon = {
+                        ExposedDropdownMenuDefaults.TrailingIcon(
+                            expanded = expanded
+                        )
+                    },
+                    modifier = Modifier
+                        .menuAnchor()
+                        .fillMaxWidth()
                 )
+
                 ExposedDropdownMenu(
                     expanded = expanded,
-                    onDismissRequest = { expanded = false }
+                    onDismissRequest = {
+                        expanded = false
+                    }
                 ) {
                     StrategyType.entries.forEach { type ->
                         DropdownMenuItem(
-                            text = { Text(type.value.replaceFirstChar { it.uppercase() }) },
+                            text = {
+                                Text(
+                                    type.value
+                                        .replaceFirstChar { it.uppercase() }
+                                )
+                            },
                             onClick = {
                                 selectedType = type
                                 expanded = false
@@ -111,35 +155,85 @@ fun AddStrategyScreen(
                 }
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
-
             OutlinedTextField(
                 value = instructions,
                 onValueChange = { instructions = it },
                 label = { Text("Instructions") },
+                placeholder = {
+                    Text("Describe how to use this strategy")
+                },
                 modifier = Modifier.fillMaxWidth(),
-                minLines = 4
+                minLines = 5
             )
 
-            Spacer(modifier = Modifier.height(20.dp))
+            Column {
+                Text(
+                    text = "How helpful is this strategy?",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold
+                )
 
-            Text("Rating", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(vertical = 8.dp)
-            ) {
-                (1..5).forEach { star ->
-                    IconButton(onClick = { rating = star }) {
-                        Icon(
-                            imageVector = Icons.Default.Star,
-                            contentDescription = "Star $star",
-                            tint = if (star <= rating) Color(0xFFFFB300) else Color.LightGray
-                        )
+                Spacer(modifier = Modifier.height(4.dp))
+
+                Text(
+                    text = "Choose an initial rating. You can update it later.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(top = 6.dp)
+                ) {
+                    (1..5).forEach { star ->
+                        IconButton(
+                            onClick = {
+                                rating = star
+                            }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Star,
+                                contentDescription = "Rate $star out of 5",
+                                tint = if (star <= rating) {
+                                    Color(0xFFFFB300)
+                                } else {
+                                    MaterialTheme.colorScheme.outlineVariant
+                                }
+                            )
+                        }
                     }
                 }
             }
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Column(
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text(
+                        text = "Share with the Reclaim community",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.SemiBold
+                    )
 
-            Spacer(modifier = Modifier.height(24.dp))
+                    Spacer(modifier = Modifier.height(4.dp))
+
+                    Text(
+                        text = "Allow other users to discover and use this strategy.",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+
+                Switch(
+                    checked = isShared,
+                    onCheckedChange = { isShared = it }
+                )
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
 
             Button(
                 onClick = {
@@ -147,12 +241,14 @@ fun AddStrategyScreen(
                         val strategy = CopingStrategy(
                             id = UUID.randomUUID().toString(),
                             userId = userId,
-                            name = name,
+                            name = name.trim(),
                             type = selectedType,
-                            instructions = instructions,
+                            instructions = instructions.trim(),
                             rating = rating,
-                            dateAdded = TimestampParser.formatIso8601()
+                            dateAdded = TimestampParser.formatIso8601(),
+                            isShared = isShared
                         )
+
                         viewModel.addStrategy(userId, strategy)
                         onBack()
                     }
@@ -162,6 +258,8 @@ fun AddStrategyScreen(
             ) {
                 Text("Save Strategy")
             }
+
+            Spacer(modifier = Modifier.height(24.dp))
         }
     }
 }

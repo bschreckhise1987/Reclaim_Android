@@ -44,6 +44,7 @@ class StrategyRepository {
             put("instructions", strategy.instructions)
             put("rating", strategy.rating.toString())
             put("date_added", TimestampParser.formatIso8601())
+            put("is_shared", strategy.isShared)
         }
         postgrest["coping_strategies"].insert(payload)
     }
@@ -54,6 +55,7 @@ class StrategyRepository {
             put("type", strategy.type.value)
             put("instructions", strategy.instructions)
             put("rating", strategy.rating.toString())
+            put("is_shared", strategy.isShared)
         }
         postgrest["coping_strategies"].update(payload) {
             filter { eq("id", strategy.id) }
@@ -143,6 +145,15 @@ class StrategyRepository {
         val grouped = rows.groupBy { it.strategy_id }
         return grouped.mapValues { (_, scoreList) ->
             scoreList.map { it.score }.average().toInt()
+        }
+    }
+
+    suspend fun updateSharing(strategyId: String, isShared: Boolean) {
+        val payload = buildJsonObject {
+            put("is_shared", isShared)
+        }
+        postgrest["coping_strategies"].update(payload) {
+            filter { eq("id", strategyId) }
         }
     }
 }
