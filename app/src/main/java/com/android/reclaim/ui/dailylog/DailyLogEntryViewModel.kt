@@ -28,12 +28,24 @@ class DailyLogEntryViewModel(
 
     fun submitLog(userId: String, onFinished: (Boolean) -> Unit) {
         if (!canSubmit) return
+
         viewModelScope.launch {
             isSubmitting = true
             errorMessage = null
+
             try {
-                val moodLabel = MoodOptions.all.firstOrNull { it.emoji == mood }?.label ?: ""
-                val fullMood = if (moodLabel.isNotEmpty()) "$mood $moodLabel" else mood
+                val moodLabel =
+                    MoodOptions.all
+                        .firstOrNull { it.emoji == mood }
+                        ?.label
+                        ?: ""
+
+                val fullMood =
+                    if (moodLabel.isNotEmpty()) {
+                        "$mood $moodLabel"
+                    } else {
+                        mood
+                    }
 
                 val payload = NewDailyLog(
                     userId = userId,
@@ -44,11 +56,14 @@ class DailyLogEntryViewModel(
                 )
 
                 repository.createLog(payload)
+
                 showSuccess = true
                 onFinished(true)
+
             } catch (e: Exception) {
                 errorMessage = "Failed to submit daily log."
                 onFinished(false)
+
             } finally {
                 isSubmitting = false
             }
