@@ -9,7 +9,9 @@ import com.android.reclaim.data.model.Profile
 import com.android.reclaim.data.repository.ProfileRepository
 import com.android.reclaim.util.SoberTimeManager
 import com.android.reclaim.util.TimestampParser
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -29,6 +31,7 @@ class ProfileViewModel(
     fun load(userId: String?) {
         if (userId == null) return
         if (isLoaded) return
+
         viewModelScope.launch {
             loadProfile(userId)
         }
@@ -37,8 +40,10 @@ class ProfileViewModel(
     suspend fun loadProfile(userId: String) {
         isLoading = true
         errorMessage = null
+
         try {
             val p = profileRepository.getProfile(userId)
+
             profile = p
             calculateStreaks()
             isLoaded = true
@@ -49,11 +54,77 @@ class ProfileViewModel(
         }
     }
 
+    /**
+     * Saves all profile changes in one operation.
+     *
+     * This allows ProfileEditScreen to wait until every update
+     * has completed before returning to the Profile screen.
+     */
+    suspend fun saveProfile(
+        userId: String,
+        name: String,
+        bio: String,
+        soberStartDate: Date?,
+        photoBytes: ByteArray?
+    ): Boolean {
+        isLoading = true
+        errorMessage = null
+
+        return try {
+            val currentProfile = profile
+
+            if (name != currentProfile?.fullName) {
+                profileRepository.updateName(userId, name)
+            }
+
+            if (bio != currentProfile?.bio) {
+                profileRepository.updateBio(userId, bio)
+            }
+
+            if (soberStartDate != null) {
+                val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.US)
+                val dateString = sdf.format(soberStartDate)
+
+                if (dateString != currentProfile?.soberStartDate) {
+                    profileRepository.updateSoberStartDate(
+                        userId,
+                        dateString
+                    )
+                }
+            }
+
+            if (photoBytes != null) {
+                val url = profileRepository.uploadProfilePhoto(
+                    userId,
+                    photoBytes
+                )
+
+                profile = profile?.copy(photoUrl = url)
+            }
+
+            val updatedProfile = profileRepository.getProfile(userId)
+
+            profile = updatedProfile
+
+            calculateStreaks()
+
+            true
+        } catch (e: Exception) {
+            errorMessage = e.message ?: "Profile update failed."
+            false
+        } finally {
+            isLoading = false
+        }
+    }
+
     fun updateName(userId: String, name: String) {
         viewModelScope.launch {
             try {
                 profileRepository.updateName(userId, name)
-                profile = profile?.copy(fullName = name)
+
+                profile = profile?.copy(
+                    fullName = name
+                )
             } catch (e: Exception) {
                 errorMessage = "Profile update failed."
             }
@@ -64,20 +135,38 @@ class ProfileViewModel(
         viewModelScope.launch {
             try {
                 profileRepository.updateBio(userId, bio)
-                profile = profile?.copy(bio = bio)
+
+                profile = profile?.copy(
+                    bio = bio
+                )
             } catch (e: Exception) {
                 errorMessage = "Profile update failed."
             }
         }
     }
 
-    fun updateSoberStartDate(userId: String, date: Date) {
-        val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.US)
+    fun updateSoberStartDate(
+        userId: String,
+        date: Date
+    ) {
+        val sdf = SimpleDateFormat(
+            "yyyy-MM-dd",
+            Locale.US
+        )
+
         val dateString = sdf.format(date)
+
         viewModelScope.launch {
             try {
-                profileRepository.updateSoberStartDate(userId, dateString)
-                profile = profile?.copy(soberStartDate = dateString)
+                profileRepository.updateSoberStartDate(
+                    userId,
+                    dateString
+                )
+
+                profile = profile?.copy(
+                    soberStartDate = dateString
+                )
+
                 calculateStreaks()
             } catch (e: Exception) {
                 errorMessage = "Profile update failed."
@@ -85,11 +174,20 @@ class ProfileViewModel(
         }
     }
 
-    fun uploadProfilePhoto(userId: String, jpegBytes: ByteArray) {
+    fun uploadProfilePhoto(
+        userId: String,
+        jpegBytes: ByteArray
+    ) {
         viewModelScope.launch {
             try {
-                val url = profileRepository.uploadProfilePhoto(userId, jpegBytes)
-                profile = profile?.copy(photoUrl = url)
+                val url = profileRepository.uploadProfilePhoto(
+                    userId,
+                    jpegBytes
+                )
+
+                profile = profile?.copy(
+                    photoUrl = url
+                )
             } catch (e: Exception) {
                 errorMessage = "Profile update failed."
             }
@@ -97,19 +195,26 @@ class ProfileViewModel(
     }
 
     fun calculateStreaks() {
-        val startString = profile?.soberStartDate ?: run {
-            currentStreak = 0
-            return
-        }
+        val startString = profile?.soberStartDate
+            ?: run {
+                currentStreak = 0
+                return
+            }
 
-        val startDate = TimestampParser.parse(startString) ?: run {
-            currentStreak = 0
-            return
-        }
+        val startDate = TimestampParser.parse(startString)
+            ?: run {
+                currentStreak = 0
+                return
+            }
 
         val soberTime = SoberTimeManager.calculate(startDate)
+
         currentStreak = soberTime.totalDays
-        longestStreak = maxOf(longestStreak, currentStreak)
+
+        longestStreak = maxOf(
+            longestStreak,
+            currentStreak
+        )
     }
 
     fun clear() {
