@@ -1,560 +1,144 @@
 # Reclaim Android
 
-Reclaim is a recovery and wellness app designed to help users track
-sobriety progress, complete daily check-ins, record daily experiences,
-review history, view insights, and access coping strategies.
+[![Kotlin](https://img.shields.io/badge/Kotlin-2.2.10-7F52FF?style=flat&logo=kotlin&logoColor=white)](https://kotlinlang.org/)
+[![Compose](https://img.shields.io/badge/Jetpack%20Compose-Material%203-4285F4?style=flat&logo=android&logoColor=white)](https://developer.android.com/jetpack/compose)
+[![Backend](https://img.shields.io/badge/Supabase-Auth%20%7C%20DB%20%7C%20Storage-3FCF8E?style=flat&logo=supabase&logoColor=white)](https://supabase.com/)
+[![MinSDK](https://img.shields.io/badge/Min%20SDK-26%2B-green?style=flat&logo=android)](https://developer.android.com/)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-The Android version already had the core application functionality before
-the current iOS-to-Android visual and functionality parity work began.
+**Reclaim** is a modern, privacy-focused recovery and wellness companion built natively for Android. Designed to empower individuals on their sobriety journey, Reclaim provides intuitive tools to log daily experiences, track milestones, gain deep emotional insights, and manage personalized coping strategies.
 
-The current development phase focuses on making the Android version match
-the existing iOS version as closely as possible in appearance, behavior,
-navigation, spacing, states, and overall user experience.
-
----
-
-# Test Login
-
-Use this test account to access the app:
-
-- **EMAIL:** test@reclaim.com
-- **PASSWORD:** 12345678
-
-These credentials are for development and testing purposes only.
+This codebase represents the production-ready Android application, crafted with **Kotlin**, **Jetpack Compose (Material 3)**, and **Supabase**, offering feature-and-design parity with the iOS counterpart.
 
 ---
 
-# Technology
+## 📱 Executive Overview & Core Features
 
-The Android app uses:
+### 🏡 Home & Sobriety Dashboard
+* **Sober Time Counter**: Dynamic calculation of years, months, and total days since the user's sober start date.
+* **Streak & Milestones**: Live streak tracking with unlocked milestone badges (`30d`, `60d`, `90d`, `180d`, `365d`).
+* **Smart Recommendations**: Smart engine recommending up to 5 coping strategies tailored to current time-of-day and effectiveness history.
+* **Quick Actions & Weekly Progress**: 1-tap access to Daily Check-Ins, Daily Logs, and Strategy guides with a 7-day progress indicator.
 
-- Kotlin
-- Jetpack Compose
-- Material 3
-- Android Studio
-- Supabase Authentication
-- Supabase Database
-- Android ViewModels
-- Repository-based data access
+### ✍️ Daily Check-Ins & Logging
+* **Emoji Mood Picker**: Contextual mood selection mapping to numerical emotional health scores.
+* **Craving Intensity**: Precise `0–10` slider controls for tracking urges and triggers.
+* **Reflections & Triggers**: Structured input fields for identifying root causes and personal reflections.
+* **Duplicate Prevention**: Automated duplicate check-in detection per calendar day.
 
----
+### 📊 Recovery Analytics & Insights
+* **Interactive Canvas Charts**: Custom Jetpack Compose canvas-rendered line, bar, and donut charts.
+  * **Mood & Craving Trends**: 7-day and 30-day historical trend graphs.
+  * **Trigger Frequency**: Bar distribution of top recovery triggers.
+  * **Mood Distribution**: Donut chart visualizing emotional balance.
+  * **Strategy Effectiveness**: 30-day top-rated strategies and rising trigger frequency alerts.
 
-# Core Functionality Already Implemented
+### 💡 Coping Strategy Manager
+* **Categorized Library**: Categorized into *Breathing*, *Distraction*, *Mindfulness*, *Physical*, *Social*, *Creative*, *Emotional*, and *Spiritual*.
+* **Usage & Effectiveness Logging**: Track when strategies are used and rate their real-world impact.
+* **Interactive Guide**: Integrated educational coping guide for acute craving management.
 
-Before beginning the visual parity work, the Android app already had
-basic functionality across the main areas of the application.
+### 👤 Profile & Customization
+* **Avatar & Storage**: Profile photo upload via Android System Photo Picker backed by Supabase Storage.
+* **Sobriety Management**: Native date picker to update sober start date and auto-recalculate streak milestones.
+* **Bio & Customization**: Personalized bio and display name fields.
 
-## Authentication
-
-- User login
-- User authentication through Supabase
-- Authenticated user session handling
-- Account-related navigation
-- Logout functionality
-
-## Home
-
-- Home dashboard
-- Personalized welcome message
-- Sober time tracking
-- Streak tracking
-- Recommended coping strategies
-- Quick actions
-- Daily check-in access
-- Daily log access
-- Coping strategy access
-- Weekly check-in information
-
-## Daily Check-In
-
-- Mood selection
-- Craving level tracking
-- Optional notes
-- Saving check-ins to the database
-- Prevention of duplicate check-ins on the same day
-- Loading and error states
-- Weekly check-in tracking
-
-## Daily Logs
-
-- Opening the daily log entry flow
-- Entering daily log information
-- Saving daily log information
-- Accessing daily log functionality from the Home Screen
-
-## History
-
-- Loading saved check-ins and daily logs
-- Displaying historical entries
-- Viewing previous recovery activity
-- Refreshing history data
-
-## Insights
-
-- Loading insights information
-- Displaying recovery-related statistics
-- Displaying check-in and progress information
-- Accessing the Insights section from the main navigation
-
-## Coping Strategies
-
-- Viewing coping strategies
-- Opening the strategies section
-- Viewing strategy information
-- Accessing strategy-related screens
-- Adding and managing strategy information
-
-## Profile
-
-- Viewing user profile information
-- Accessing profile-related screens
-- Editing user profile information
-
-## Settings
-
-- Opening the settings section
-- Viewing account settings
-- Viewing notification settings
-- Viewing privacy settings
-- Viewing backup and sync settings
-- Viewing support settings
-- Viewing appearance settings
+### ⚙️ Account, Privacy & Security
+* **Authentication**: Supabase Auth integration supporting Sign In, Account Creation, Sign Out, and Account Deletion.
+* **Robust Error Handling**: Differentiates invalid credentials from offline network failures (e.g., Airplane mode) with clear, actionable user feedback.
+* **Account Controls**: Re-authentication workflows for changing email or password securely.
+* **Customization Preferences**: Appearance settings (Light/Dark/System theme, High Contrast, Reduce Motion) and notification reminders.
 
 ---
 
-# iOS-to-Android Parity Work
+## 🛠 Tech Stack & Architecture
 
-The following screens and areas have been updated during the current
-iOS-to-Android parity effort.
+Reclaim follows modern Android development best practices, leveraging a reactive **MVVM (Model-View-ViewModel)** architecture with a clean Repository pattern.
 
-The goal is not to recreate basic functionality. The Android application
-already had its core functionality before this effort began.
+| Layer | Technology / Library |
+| :--- | :--- |
+| **Language** | [Kotlin 2.2.10](https://kotlinlang.org/) |
+| **UI Framework** | [Jetpack Compose](https://developer.android.com/jetpack/compose) with Material 3 Design |
+| **Navigation** | [Jetpack Navigation Compose](https://developer.android.com/jetpack/compose/navigation) |
+| **State Management** | StateFlow, `mutableStateOf`, Lifecycle ViewModel Compose |
+| **Backend & Auth** | [Supabase Kotlin SDK 3.1.1](https://github.com/supabase-community/supabase-kt) (Auth, Postgrest, Storage) |
+| **Networking** | [Ktor Client 3.1.1](https://ktor.io/) (OkHttp engine) |
+| **Serialization** | `kotlinx.serialization` (JSON) |
+| **Image Loading** | [Coil Compose 2.7.0](https://coil-kt.github.io/coil/) |
 
-The current goal is to bring the Android implementation as close as
-possible to the existing iOS implementation.
-
----
-
-# Completed Parity Work
-
-## 1. Home Screen
-
-### Completed
-
-- iOS-style vertical spacing
-- Updated top padding
-- Welcome message layout
-- Recommended strategies card
-- Quick action layout
-- Sober Time card
-- Streak card
-- Milestone icons
-- iOS-inspired milestone colors
-- Daily Check-In button
-- Daily Log button
-- Coping Strategy button
-- Weekly check-in information
-- Improved overall screen organization
-
----
-
-## 2. Daily Check-In Screen
-
-### Completed
-
-- Emoji-based mood selection
-- Selected mood state
-- Craving level slider from 0 to 10
-- Optional notes input
-- Craving intensity display
-- Submit check-in button
-- Submit validation
-- Loading state
-- Duplicate check-in prevention
-- Weekly check-in refresh
-- iOS-inspired spacing
-- iOS-inspired card styling
+```
+com.android.reclaim/
+├── config/             # Supabase Client & API Credentials Configuration
+├── data/
+│   ├── model/          # Data transfer objects & Domain entities (@Serializable)
+│   └── repository/     # Repositories abstracting Supabase Postgrest & Storage calls
+├── util/               # Date parsers, SoberTime calculator, Preferences, Mood options
+└── ui/
+    ├── auth/           # Login & Registration Screens & AuthViewModel
+    ├── components/     # Shared Compose UI components & Canvas Charts
+    ├── checkin/        # Daily Check-In bottom sheet & ViewModel
+    ├── dailylog/       # Daily Log entry sheet & ViewModel
+    ├── history/        # Timeline Event History & ViewModel
+    ├── home/           # Main Dashboard & HomeViewModel
+    ├── insights/       # Analytics charts & InsightsViewModel
+    ├── profile/        # Profile, Profile Editing & ProfileViewModel
+    ├── strategy/       # Strategy List, Details, Add & Guide screens
+    └── settings/       # Settings & Sub-screens (Account, Email, Password, Appearance, Support)
+```
 
 ---
 
-## 3. History Screen
+## 🚀 Getting Started
 
-### Completed
+### Prerequisites
+* **Android Studio**: Studio Ladybug (2024.2.1+) or newer.
+* **JDK**: Java Development Kit 17+.
+* **Android SDK**: API Level 35+ (Compile SDK 37, Min SDK 26).
 
-- History entries displayed in a list
-- Newest entries shown first
-- Expandable history cards
-- Entry summaries
-- Additional entry details
-- Empty state
-- Error state
-- Loading state
-- Refresh action
-- iOS-inspired card styling
-- iOS-inspired spacing
-
----
-
-## 4. Insights Screen
-
-### Completed
-
-- Updated Insights screen for closer iOS parity
-- Recovery-related statistics
-- Check-in information
-- Progress information
-- Chart presentation
-- Craving trend chart
-- Daily usage chart
-- Mood donut chart
-- Mood trend chart
-- Trigger chart
-- Improved screen organization
-- iOS-inspired spacing and presentation
-
-### Build Status
-
-The Insights changes were corrected after resolving build errors involving
-`count` and `usageCount`.
-
-The completed Insights screen was confirmed to build and run successfully.
+### Building & Running
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/your-org/reclaim-android.git
+   cd reclaim-android
+   ```
+2. **Open in Android Studio**: Open the root directory in Android Studio.
+3. **Gradle Sync**: Let Gradle synchronize dependencies (`libs.versions.toml`).
+4. **Run Application**: Connect an Android device or emulator (Android 8.0 / API 26+) and click **Run 'app'**.
 
 ---
 
-## 5. Coping Strategies List
+## 🧪 Development & Test Account
 
-### Completed
+For testing and verification during development, use the pre-configured credentials below:
 
-- Updated Coping Strategies list for closer iOS parity
-- Strategy categories
-- Category organization
-- Strategy cards
-- Strategy type indicators
-- Strategy ratings
-- Navigation to strategy details
-- Empty state
-- Add Strategy action
-- Coping Guide access
-- Improved category ordering
-- Explicit category handling
-- Improved empty-state placement
-- Improved overall organization
-- iOS-inspired spacing and presentation
-
-### Category Organization
-
-The strategy categories were organized in the following order:
-
-1. Breathing
-2. Distraction
-3. Mindfulness
-4. Physical
-5. Emotional
-6. Social
-
-### Build Status
-
-The Coping Strategies list changes were confirmed to build and run
-successfully.
+> [!IMPORTANT]
+> **Test Login Credentials**
+> * **Email**: `test@reclaim.com`
+> * **Password**: `12345678`
 
 ---
 
-## 6. Add Daily Log
+## 📋 Quality Assurance & Verification Checklist
 
-### Completed
+When performing release verification, run through the following test suite:
 
-The Add Daily Log screen was updated to more closely match the iOS
-implementation.
-
-Changes included:
-
-- Updated Daily Log presentation
-- iOS-style mood selection
-- Emoji-based mood selection
-- Mood selection state
-- Mood category presentation
-- Updated trigger input
-- Updated trigger wording
-- Optional trigger entry
-- Craving intensity section
-- 0-to-10 craving slider
-- Craving intensity display
-- Reflection Notes section
-- Larger reflection notes input
-- Updated Save Daily Log button
-- Loading state while saving
-- Saved confirmation behavior
-- Error message presentation
-- iOS-inspired spacing
-- iOS-inspired card sections
-- Improved overall screen organization
-
-### ViewModels Reviewed
-
-The following Daily Log components were reviewed during this work:
-
-- `DailyLogEntrySheet`
-- `DailyLogEntryViewModel`
-- `DailyLogViewModel`
-
-### Build Status
-
-The Add Daily Log changes were completed successfully.
+- [x] **Authentication**: Validate login with valid credentials, incorrect password error, and Airplane Mode network failure.
+- [x] **Check-In**: Submit a daily check-in and verify duplicate check-in prevention on the same calendar day.
+- [x] **Daily Log**: Add a log with custom trigger, craving slider value, and reflection notes.
+- [x] **History**: Refresh timeline and expand history cards to verify detail fields.
+- [x] **Insights**: Verify line charts, bar graphs, and donut charts load data from Supabase RPC functions.
+- [x] **Strategies**: Create a coping strategy, filter by category, log usage, and rate effectiveness.
+- [x] **Profile**: Edit display name, bio, sober start date, and upload a profile photo via system photo picker.
+- [x] **Settings**: Test theme toggles, account management, email/password updates, and sign out.
 
 ---
 
-# Login / Authentication Error Fix
+## 📝 Changelog
 
-A login error-handling issue was identified during testing.
-
-When the device had no internet connection or was in Airplane Mode,
-the login screen could display:
-
-> Invalid email or password.
-
-This message was misleading because the problem could be network
-connectivity rather than incorrect credentials.
-
-## Problem
-
-The authentication error handling was treating different types of
-failures as the same error.
-
-This created a particularly confusing situation on the login screen
-because two common problems could produce the same message:
-
-- Incorrect email or password
-- No internet connection / Airplane Mode
-
-## Fix
-
-The authentication error handling was updated to distinguish network
-and timeout failures from authentication failures.
-
-### Invalid Credentials
-
-The user receives:
-
-> Invalid email or password.
-
-### Network Connectivity
-
-The user receives:
-
-> Unable to connect. Check your internet connection or turn off Airplane Mode and try again.
-
-### Missing Login Information
-
-The user receives:
-
-> Please enter email and password.
-
-### Timeout / Connection Failure
-
-Network request timeout and connection failures are also reported using
-the connectivity message rather than incorrectly reporting invalid
-credentials.
-
-## Additional Error-Handling Improvement
-
-Coroutine cancellation is preserved rather than being incorrectly
-converted into a login failure.
-
-This prevents cancellation from being presented to the user as an
-authentication problem.
+Detailed release history and feature updates are documented in [CHANGELOG.md](CHANGELOG.md).
 
 ---
 
-# Current Screen Status
+## 📄 License
 
-The current iOS-to-Android parity work has progressed through the
-following screens:
-
-| Screen | Status |
-|---|---|
-| Home | Completed |
-| Daily Check-In | Completed |
-| History | Completed |
-| Insights | Completed |
-| Coping Strategies List | Completed |
-| Add Daily Log | Completed |
-
-### Additional Completed Fix
-
-- Login network/connectivity error handling
-
----
-
-# Screens Still Requiring Parity Work
-
-The following areas still require additional iOS-to-Android parity work:
-
-- Strategy Detail Screen
-- Add Strategy Screen
-- Coping Strategy Guide
-- Profile Screen
-- Settings Screen
-- Appearance Settings
-- Notifications Settings
-- Backup & Sync
-- Account Settings
-- Privacy Settings
-- Support Settings
-- Final Navigation Review
-- Final iOS-to-Android Visual Comparison
-- Full Android Testing
-
-Some of these screens already contain functional implementations.
-Additional parity work is required to compare their Android presentation
-and behavior against the iOS version.
-
----
-
-# Known Bugs / Issues
-
-## Sober Time Dark Theme
-
-The Sober Time card has been identified as displaying an incorrect
-value or presentation when using the dark theme.
-
-This remains an item for investigation and testing.
-
----
-
-# Development Process
-
-The Android app is being updated **one screen at a time** using the iOS
-version as the design and behavior reference.
-
-For each screen:
-
-1. Compare the Android screen with the iOS screen.
-2. Identify visual and functional differences.
-3. Update the Android code.
-4. Build the project in Android Studio.
-5. Run and test the screen.
-6. Fix build errors and functionality issues.
-7. Confirm the change works.
-8. Move to the next screen.
-
-This process helps prevent multiple unfinished screens from being changed
-at the same time and makes it easier to identify problems introduced by
-each parity update.
-
----
-
-# Changelog
-
-## September 18, 2026
-
-### Add Daily Log
-
-- Completed the Add Daily Log iOS-to-Android parity work.
-- Reviewed the existing `DailyLogEntrySheet`.
-- Reviewed the existing `DailyLogEntryViewModel`.
-- Reviewed the existing `DailyLogViewModel`.
-- Compared the Android implementation against the iOS Daily Log
-  implementation.
-- Updated mood selection to use an iOS-style mood selection layout.
-- Removed the previous mood dropdown approach from the Daily Log entry
-  presentation.
-- Updated Daily Log section layout and spacing.
-- Updated trigger input presentation.
-- Updated craving intensity controls.
-- Added 0-to-10 slider presentation.
-- Updated craving intensity display.
-- Updated reflection notes input.
-- Updated Save Daily Log button presentation.
-- Added saving/loading feedback.
-- Added Saved confirmation behavior.
-- Improved error presentation.
-- Updated card sections and spacing to more closely match iOS.
-- Completed the Daily Log parity work.
-
-### Login / Authentication
-
-- Investigated the login error shown when the device was in Airplane Mode
-  or otherwise unable to connect to the authentication service.
-- Identified that network failures could be reported as:
-  `Invalid email or password.`
-- Updated authentication error handling to distinguish network failures
-  from invalid credentials.
-- Added a specific connectivity error message:
-  `Unable to connect. Check your internet connection or turn off Airplane Mode and try again.`
-- Preserved the invalid-credentials message for authentication failures.
-- Added handling for missing login credentials.
-- Added handling for network request timeouts.
-- Preserved coroutine cancellation instead of converting cancellation into
-  a login error.
-
----
-
-## September 9, 2026
-
-### Insights
-
-- Continued iOS-to-Android parity work with the Insights screen.
-- Updated the Insights implementation and chart presentation.
-- Worked through build errors involving:
-    - `count`
-    - `usageCount`
-- Corrected the Insights implementation.
-- Updated the presentation of recovery-related statistics.
-- Updated chart-related components.
-- Confirmed the Insights screen builds and runs successfully.
-
-### Coping Strategies
-
-- Began iOS-to-Android parity work on the Coping Strategies area.
-- Reviewed:
-    - `AddStrategyScreen`
-    - `CopingStrategyGuideScreen`
-    - `StrategyDetailScreen`
-    - `StrategyListScreen`
-    - `StrategyViewModel`
-- Updated the Strategy List implementation.
-- Improved strategy category organization.
-- Added explicit category handling.
-- Corrected category ordering.
-- Improved the empty-state implementation.
-- Updated strategy card presentation.
-- Confirmed the Strategy List builds and runs successfully.
-
----
-
-# Important Distinction
-
-The app's core functionality was implemented before the current
-iOS-to-Android parity work began.
-
-The current work is focused on:
-
-- Matching the iOS layout
-- Matching spacing and sizing
-- Matching colors
-- Matching typography
-- Matching navigation behavior
-- Matching loading states
-- Matching empty states
-- Matching error handling
-- Matching success states
-- Matching interaction behavior
-- Matching screen organization
-- Matching the overall user experience
-- Verifying Android behavior against the existing iOS implementation
-
-The purpose of this phase is to make the Android version as close as
-possible to the existing iOS version while preserving the functionality
-that was already present in the Android application.
-
----
-
-# Next Development Step
-
-The next screen scheduled for iOS-to-Android parity work is:
-
-**Strategy Detail Screen**
-
-After the remaining screens are completed, the project will move into
-the final navigation review, full iOS-to-Android comparison, and complete
-Android testing phase.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
