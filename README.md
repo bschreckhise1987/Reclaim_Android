@@ -21,7 +21,7 @@ This codebase represents the production-ready Android application, crafted with 
 * **Quick Actions & Weekly Progress**: 1-tap access to Daily Check-Ins, Daily Logs, and Strategy guides with a 7-day progress indicator.
 
 ### ✍️ Daily Check-Ins & Logging
-* **Emoji Mood Picker**: Contextual mood selection mapping to numerical emotional health scores
+* **Emoji Mood Picker**: Contextual mood selection mapping to numerical emotional health scores.
 * **Craving Intensity**: Precise `0–10` slider controls for tracking urges and triggers.
 * **Reflections & Triggers**: Structured input fields for identifying root causes and personal reflections.
 * **Duplicate Prevention**: Automated duplicate check-in detection per calendar day.

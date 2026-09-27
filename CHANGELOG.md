@@ -23,7 +23,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
   - Trigger entry and reflection notes fields.
   - Automated same-day duplicate check-in prevention.
 - **History Timeline**:
-  - Paginated recovery timeline with newest entries first
+  - Paginated recovery timeline with newest entries first.
   - Expandable history cards detailing mood, craving levels, triggers, and reflection notes.
   - Pull-to-refresh support.
 - **Insights & Recovery Analytics**:
