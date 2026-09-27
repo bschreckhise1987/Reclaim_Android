@@ -32,10 +32,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -45,6 +49,7 @@ import com.android.reclaim.ui.checkin.CheckInViewModel
 import com.android.reclaim.ui.dailylog.DailyLogViewModel
 import com.android.reclaim.ui.profile.ProfileViewModel
 import com.android.reclaim.ui.strategy.StrategyViewModel
+import com.android.reclaim.util.PreferencesManager
 import com.android.reclaim.util.SoberTimeManager
 import com.android.reclaim.util.TimestampParser
 
@@ -62,6 +67,11 @@ fun HomeScreen(
     onOpenStrategyDetail: (CopingStrategy) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
+    val prefs = remember { PreferencesManager(context) }
+    val hideStreak by prefs.hideStreakFlow.collectAsState()
+    val hideSoberDate by prefs.hideSoberDateFlow.collectAsState()
+
     LaunchedEffect(userId) {
         if (userId != null) {
             profileVM.load(userId)
@@ -223,7 +233,7 @@ fun HomeScreen(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(12.dp),
                     colors = CardDefaults.cardColors(
-                        containerColor = Color(0xFFE8F5E9)
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant
                     ),
                     elevation = CardDefaults.cardElevation(
                         defaultElevation = 0.dp
@@ -281,60 +291,63 @@ fun HomeScreen(
         // Sober Time
         // ---------------------------------------------------------
 
-        profileVM.profile?.soberStartDate?.let { startString ->
+        if (!hideSoberDate) {
+            profileVM.profile?.soberStartDate?.let { startString ->
 
-            val startDate = TimestampParser.parse(startString)
+                val startDate = TimestampParser.parse(startString)
 
-            if (startDate != null) {
+                if (startDate != null) {
 
-                val soberTime = SoberTimeManager.calculate(startDate)
+                    val soberTime = SoberTimeManager.calculate(startDate)
 
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
-                    shape = RoundedCornerShape(20.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = Color(0xFFE5E5EA)
-                    ),
-                    elevation = CardDefaults.cardElevation(
-                        defaultElevation = 4.dp
-                    )
-                ) {
-
-                    Column(
+                    Card(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(
-                                vertical = 28.dp,
-                                horizontal = 20.dp
-                            ),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(14.dp)
+                            .padding(horizontal = 16.dp),
+                        shape = RoundedCornerShape(20.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.surfaceVariant
+                        ),
+                        elevation = CardDefaults.cardElevation(
+                            defaultElevation = 2.dp
+                        )
                     ) {
 
-                        Text(
-                            text = "Your Sober Time",
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.SemiBold,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(
+                                    vertical = 28.dp,
+                                    horizontal = 20.dp
+                                ),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(14.dp)
+                        ) {
 
-                        Text(
-                            text = "${soberTime.years} years • " +
-                                    "${soberTime.months} months • " +
-                                    "${soberTime.days} days",
-                            fontSize = 34.sp,
-                            lineHeight = 40.sp,
-                            fontWeight = FontWeight.Bold,
-                            textAlign = TextAlign.Center
-                        )
+                            Text(
+                                text = "Your Sober Time",
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.SemiBold,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
 
-                        Text(
-                            text = "Since ${TimestampParser.formatDateShort(startDate)}",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
+                            Text(
+                                text = "${soberTime.years} years • " +
+                                        "${soberTime.months} months • " +
+                                        "${soberTime.days} days",
+                                fontSize = 34.sp,
+                                lineHeight = 40.sp,
+                                fontWeight = FontWeight.Bold,
+                                textAlign = TextAlign.Center,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+
+                            Text(
+                                text = "Since ${TimestampParser.formatDateShort(startDate)}",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
                     }
                 }
             }
@@ -344,104 +357,107 @@ fun HomeScreen(
         // Streak Card
         // ---------------------------------------------------------
 
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-            shape = RoundedCornerShape(16.dp),
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceVariant
-            ),
-            elevation = CardDefaults.cardElevation(
-                defaultElevation = 2.dp
-            )
-        ) {
-
-            Column(
+        if (!hideStreak) {
+            Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+                    .padding(horizontal = 16.dp),
+                shape = RoundedCornerShape(16.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant
+                ),
+                elevation = CardDefaults.cardElevation(
+                    defaultElevation = 2.dp
+                )
             ) {
 
-                Text(
-                    text = "Current Streak",
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Text(
-                    text = "${profileVM.currentStreak} Days",
-                    fontSize = 32.sp,
-                    fontWeight = FontWeight.SemiBold
-                )
-
-                Spacer(modifier = Modifier.height(2.dp))
-
-                Text(
-                    text = "Longest Streak: ${profileVM.longestStreak} Days",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                LazyRow(
-                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
 
-                    items(milestones) { milestone ->
+                    Text(
+                        text = "Current Streak",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
 
-                        val requiredDays =
-                            milestone.removeSuffix("d").toIntOrNull() ?: 0
+                    Spacer(modifier = Modifier.height(8.dp))
 
-                        val unlocked =
-                            profileVM.currentStreak >= requiredDays
+                    Text(
+                        text = "${profileVM.currentStreak} Days",
+                        fontSize = 32.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
 
-                        Column(
-                            modifier = Modifier.width(50.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.spacedBy(4.dp)
-                        ) {
+                    Spacer(modifier = Modifier.height(2.dp))
 
-                            Icon(
-                                imageVector =
-                                    if (unlocked) {
-                                        Icons.Default.MilitaryTech
-                                    } else {
-                                        Icons.Default.Lock
-                                    },
-                                contentDescription =
-                                    if (unlocked) {
-                                        "$milestone milestone unlocked"
-                                    } else {
-                                        "$milestone milestone locked"
-                                    },
-                                modifier = Modifier.size(26.dp),
-                                tint =
-                                    if (unlocked) {
-                                        milestoneColor(milestone)
-                                    } else {
-                                        MaterialTheme.colorScheme.outline.copy(
-                                            alpha = 0.4f
-                                        )
-                                    }
-                            )
+                    Text(
+                        text = "Longest Streak: ${profileVM.longestStreak} Days",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
 
-                            Text(
-                                text = milestone,
-                                style = MaterialTheme.typography.labelSmall,
-                                color =
-                                    if (unlocked) {
-                                        MaterialTheme.colorScheme.onSurfaceVariant
-                                    } else {
-                                        MaterialTheme.colorScheme.outline.copy(
-                                            alpha = 0.4f
-                                        )
-                                    }
-                            )
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    LazyRow(
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+
+                        items(milestones) { milestone ->
+
+                            val requiredDays =
+                                milestone.removeSuffix("d").toIntOrNull() ?: 0
+
+                            val unlocked =
+                                profileVM.currentStreak >= requiredDays
+
+                            Column(
+                                modifier = Modifier.width(50.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.spacedBy(4.dp)
+                            ) {
+
+                                Icon(
+                                    imageVector =
+                                        if (unlocked) {
+                                            Icons.Default.MilitaryTech
+                                        } else {
+                                            Icons.Default.Lock
+                                        },
+                                    contentDescription =
+                                        if (unlocked) {
+                                            "$milestone milestone unlocked"
+                                        } else {
+                                            "$milestone milestone locked"
+                                        },
+                                    modifier = Modifier.size(26.dp),
+                                    tint =
+                                        if (unlocked) {
+                                            milestoneColor(milestone)
+                                        } else {
+                                            MaterialTheme.colorScheme.outline.copy(
+                                                alpha = 0.4f
+                                            )
+                                        }
+                                )
+
+                                Text(
+                                    text = milestone,
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color =
+                                        if (unlocked) {
+                                            MaterialTheme.colorScheme.onSurfaceVariant
+                                        } else {
+                                            MaterialTheme.colorScheme.outline.copy(
+                                                alpha = 0.4f
+                                            )
+                                        }
+                                )
+                            }
                         }
                     }
                 }
@@ -481,7 +497,8 @@ fun HomeScreen(
                 Text(
                     text = "${checkInVM.daysCheckedInThisWeek} of 7 days",
                     style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
 
                 Row(
@@ -527,4 +544,3 @@ private fun milestoneColor(milestone: String): Color =
         "365d" -> Color(0xFF007AFF)
         else -> Color.Gray
     }
-

@@ -25,6 +25,7 @@ class ProfileViewModel(
     var longestStreak by mutableStateOf(0)
 
     var isLoading by mutableStateOf(false)
+    var isUploadingPhoto by mutableStateOf(false)
     var errorMessage by mutableStateOf<String?>(null)
     var isLoaded by mutableStateOf(false)
 
@@ -179,6 +180,8 @@ class ProfileViewModel(
         jpegBytes: ByteArray
     ) {
         viewModelScope.launch {
+            isUploadingPhoto = true
+            errorMessage = null
             try {
                 val url = profileRepository.uploadProfilePhoto(
                     userId,
@@ -189,7 +192,9 @@ class ProfileViewModel(
                     photoUrl = url
                 )
             } catch (e: Exception) {
-                errorMessage = "Profile update failed."
+                errorMessage = "Failed to upload photo."
+            } finally {
+                isUploadingPhoto = false
             }
         }
     }

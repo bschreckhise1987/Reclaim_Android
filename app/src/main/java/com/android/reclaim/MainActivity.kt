@@ -25,6 +25,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             val prefs = remember { PreferencesManager(applicationContext) }
             val appTheme by prefs.appThemeFlow.collectAsState()
+            val highContrast by prefs.highContrastFlow.collectAsState()
+            val largeText by prefs.largeTextFlow.collectAsState()
 
             val isDarkTheme = when (appTheme) {
                 "light" -> false
@@ -32,7 +34,11 @@ class MainActivity : ComponentActivity() {
                 else -> isSystemInDarkTheme()
             }
 
-            ReclaimTheme(darkTheme = isDarkTheme) {
+            ReclaimTheme(
+                darkTheme = isDarkTheme,
+                highContrast = highContrast,
+                largeText = largeText
+            ) {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background

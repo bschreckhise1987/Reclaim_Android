@@ -41,6 +41,7 @@ fun AppearanceSettingsScreen(
     val prefs = remember { PreferencesManager(context) }
 
     var theme by remember { mutableStateOf(prefs.appTheme) }
+    var largeText by remember { mutableStateOf(prefs.largeText) }
     var reduceMotion by remember { mutableStateOf(prefs.reduceMotion) }
     var highContrast by remember { mutableStateOf(prefs.highContrast) }
 
@@ -94,6 +95,22 @@ fun AppearanceSettingsScreen(
 
             Card(modifier = Modifier.fillMaxWidth()) {
                 Column(modifier = Modifier.padding(16.dp)) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text("Large Text", modifier = Modifier.weight(1f), style = MaterialTheme.typography.bodyLarge)
+                        Switch(
+                            checked = largeText,
+                            onCheckedChange = {
+                                largeText = it
+                                prefs.largeText = it
+                            }
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically
